@@ -25,6 +25,8 @@ model Car {
   plates              String                   //Placas do carro
   selling_date        DateTime?                //Data da venda; preenchimento opcional
   selling_price       Decimal?                 //Preço de venda; preechimento opcional 
+  customer_id         Int?
+  customer            Customer?                @relation(fields: [customer_id], references: [id])
 }
 
 model Customer {
@@ -40,6 +42,7 @@ model Customer {
   state               String                   //Estado
   phone               String                   //Telefone
   email               String                   //Email
+  car                 Car[]
 }
 
 model User {
