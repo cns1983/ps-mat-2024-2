@@ -21,25 +21,26 @@ export default function AuthControl() {
 
   async function handleLogoutButtonClick() {
     if(await askForConfirmation('Deseja realmente sair?')) {
-    //   showWaiting(true)
-    //   try {
-    //     await myfetch.post('/users/logout')
+      showWaiting(true)
+      try {
+        await myfetch.post('/users/logout')
         
-    //     // Apaga as informações em memória do usuário autenticado
-    //     setAuthUser(null)
+        // Apaga as informações em memória do usuário autenticado
+        setAuthUser(null)
+        showWaiting(false)
         
-    //     showWaiting(false)
 
-    //     // Navega para a página de login
-    //     navigate('/login')
-    //   }
-    //   catch(error) {
-    //     console.error(error)
-    //     notify(error.message, 'error')
-    //     showWaiting(false)
-    //   }
-    window.localStorage.removeItem(import.meta.env.VITE_AUTH_TOKEN_NAME)
-    setAuthUser(null)
+        // Navega para a página de login
+        navigate('/login')
+      }
+      catch(error) {
+        console.error(error)
+        notify(error.message, 'error')
+        showWaiting(false)
+      }
+      
+    // window.localStorage.removeItem(import.meta.env.VITE_AUTH_TOKEN_NAME)
+    // setAuthUser(null)
     navigate('/login')
     }
   }

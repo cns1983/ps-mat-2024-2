@@ -129,7 +129,14 @@ controller.login = async function (req,res) {
             {expiresIn: '24h'}
 
         )
-        res.send({token,user}).end()
+        res.cookie(process.env.AUTH_COOKIE_NAME, token,{
+            httpOnly: true,
+            sameSite:'none',
+            path:'/',
+            maxAge: 24*60*60*100
+
+        })
+        res.send({user}).end()
     }
     catch(error){
         console.error(error)
@@ -138,6 +145,10 @@ controller.login = async function (req,res) {
 
         res.status(500).end()
     } 
+}
+controller.logout = function(req, res){
+    res.clearCookie(process.env.AUTH_COOKIE_NAME)
+    res.status(204).end
 }
 controller.me = function(req,res){
     // retorna as informações do usuario autenticado

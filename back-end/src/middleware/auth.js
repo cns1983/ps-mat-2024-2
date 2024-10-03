@@ -17,21 +17,23 @@ export default function(req,res,next){
     // processo de verificação do token de autorização 
     let token = null
     // o token é enviado por meio do cabeçalho 'autorization' da request
+    token = req.cookies[process.env.AUTH_COOKIE_NAME]
+    if(!token){
+        const authHeader = req.headers['authorization']
+        console.log({HEADERS : req.headers})
 
-    const authHeader = req.headers['authorization']
-    console.log({HEADERS : req.headers})
+        // o cabecalho authorization nao existe retorna HTTP 403 : forbiden
 
-    // o cabecalho authorization nao existe retorna HTTP 403 : forbiden
+        if(!authHeader){
+            console.error('*** ERRO: acesso negado por falta de cabeçalho de autorização ***')
+            return res.status(403).end()
+        }
+        // o cabeçalho de autorização tem o formato "Bearer : xxxxxxx", 
+        // onde xxxxxxxx é um token.Portanto precisamos dividir esse cabeçalho em duas partes 
+        // cortando-o onde esta o carcter de espaço e aproveitar apenas a segunda parte
 
-    if(!authHeader){
-        console.error('*** ERRO: acesso negado por falta de cabeçalho de autorização ***')
-        return res.status(403).end()
-    }
-    // o cabeçalho de autorização tem o formato "Bearer : xxxxxxx", 
-    // onde xxxxxxxx é um token.Portanto precisamos dividir esse cabeçalho em duas partes 
-    // cortando-o onde esta o carcter de espaço e aproveitar apenas a segunda parte
-
-    token = authHeader.split(' ')[1]
+        token = authHeader.split(' ')[1]
+    }  
     // validação do token
     jwt.verify(token, process.env.TOKEN_SECRET,(error,user)=>{
         // token invalido ou expirado, retorna 

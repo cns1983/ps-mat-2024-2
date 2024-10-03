@@ -17,6 +17,7 @@ import Car from '../../models/car'
 import useConfirmDialog from '../../ui/useConfirmDialog'
 import useNotification from '../../ui/useNotification'
 import useWaiting from '../../ui/useWaiting'
+import { getClockNumberUtilityClass } from '@mui/x-date-pickers/TimeClock/clockNumberClasses'
 
 export default function CarForm() {
   /*
@@ -189,6 +190,14 @@ export default function CarForm() {
     navigate('..', { relative: 'path', replace: true })
   }
 
+  function handleKeyDown(event){
+    if(event.key === 'delete'){
+      const stateCopy = {...state}
+      stateCopy.car.customer_id = null
+      setState(stateCopy)
+    }
+  }
+
   return (
     <>
       <ConfirmDialog />
@@ -340,9 +349,11 @@ export default function CarForm() {
             fullWidth
             value={car.customer_id}
             onChange={handleFieldChange}
+            onKeyDown={handleKeyDown}
             select
-            helperText={inputErrors?.customer_id}
+            helperText={inputErrors?.customer_id || 'tecle del para limpar o cliente'}
             error={inputErrors?.customer_id}
+            
           >
             {customers.map((c) => (
               <MenuItem key={c.id} value={c.id}>
