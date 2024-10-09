@@ -45,10 +45,10 @@ controller.retrieveOne = async function (req,res){
         const result = await prisma.car.findUnique({
             where: {id: Number(req.params.id)},
             include: {
-                customer: req.query.include==='customer'
+                customer: req.query.include === 'customer'
             }
     })
-        // incontrou retorna HTTP 200 :OK (IMPLICITO)
+        // encontrou retorna HTTP 200 :OK (IMPLICITO)
        if(result)  res.send(result)
         // nao encocontrou retorna HTTP 404: NOT FOUND
        else res.status(404).end()

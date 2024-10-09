@@ -1,12 +1,14 @@
 // este middleware interpreta todas as rotas e verifica se um token de autenticação foi enviado junto com a request
 
 import jwt from 'jsonwebtoken'
+
 // algumas rotas, como user ou login poderao ser acessadas sem a necessidade de apresentação do token
 const bypassRoutes =[
     {url: '/users/login', method: 'POST' }
  ]
 
 export default function(req,res,next){
+
     // verifica se a rota interpretada corresponde a alguma das exceções cadastradas acima, Sendo o caso, permite continuar sem verificar a autenticaão.
     for (let route of bypassRoutes){
         if(route.url === req.url && route.method === req.method){
@@ -16,9 +18,15 @@ export default function(req,res,next){
     }
     // processo de verificação do token de autorização 
     let token = null
-    // o token é enviado por meio do cabeçalho 'autorization' da request
+
+    // 1. PROCURA O TOKEN EM UM COOKIE
     token = req.cookies[process.env.AUTH_COOKIE_NAME]
+
+    // 2. SE O TOKEN NÃO FOR ENCONTRADO EM UM COOKIE, ENTÃO
+    //    PROCURA NO HEADER DE AUTENTICAÇÃO
     if(!token){
+        // O token é enviado por meio do cabeçalho 'authorization'
+        // da request
         const authHeader = req.headers['authorization']
         console.log({HEADERS : req.headers})
 

@@ -17,7 +17,6 @@ import Car from '../../models/car'
 import useConfirmDialog from '../../ui/useConfirmDialog'
 import useNotification from '../../ui/useNotification'
 import useWaiting from '../../ui/useWaiting'
-import { getClockNumberUtilityClass } from '@mui/x-date-pickers/TimeClock/clockNumberClasses'
 
 export default function CarForm() {
   /*
@@ -35,7 +34,6 @@ export default function CarForm() {
     imported: false,
     plates: '',
     selling_date: null,
-    selling_price: '',
     customer_id: ''
   }
 
@@ -168,7 +166,7 @@ export default function CarForm() {
           car.selling_date = parseISO(car.selling_date)
         }
       }
-      setState({ ...state, car: car, customers })
+      setState({ ...state, car, customers })
     } catch (error) {
       console.error(error)
       notify(error.message, 'error')

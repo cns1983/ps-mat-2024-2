@@ -42,7 +42,7 @@ model Customer {
   state               String                   //Estado
   phone               String                   //Telefone
   email               String                   //Email
-  car                 Car[]
+  cars                Car[]
 }
 
 model User {

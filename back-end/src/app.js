@@ -19,7 +19,7 @@ const app = express()
 
 app.use(cors({
     origin: process.env.FRONT_END_URL.split(','),
-    credential: true  // grava o cookie no front-end
+    credentials: true  // grava o cookie no front-end
 }))
 
 app.use(logger('dev'))

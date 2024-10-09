@@ -118,24 +118,39 @@ controller.login = async function (req,res) {
                 ]
             }
         })
+        // Se o usuário não for encontrado, retorna
+        // HTTP 401: Unauthorized
         if(! user) return res.status(401).end
+
+        // Usuário encontrado, vamos conferir a senha
         const passwordIsValid = await bcrypt.compare(req.body?.password,user.password)
 
+        // Se a senha estiver errada, retorna
+        // HTTP 401: Unauthorized
         if(!passwordIsValid) return res.status(401).end()
 
+        // Usuário e senha OK, passamos ao procedimento de gerar o token
         const token = jwt.sign(
-            user,
-            process.env.TOKEN_SECRET,
-            {expiresIn: '24h'}
+            user,                       // Dados do usuário
+            process.env.TOKEN_SECRET,   // Senha para criptografar o token
+            {expiresIn: '24h'}          // Prazo de validade do token
 
         )
+        // Formamos o cookie para enviar ao front-end
         res.cookie(process.env.AUTH_COOKIE_NAME, token,{
-            httpOnly: true,
+            httpOnly: true,   // O cookie ficará inacessível para o JS no front-end
+            secure: true,   // O cookie será criptografado em conexões https
             sameSite:'none',
             path:'/',
-            maxAge: 24*60*60*100
+            maxAge: 24*60*60*100  //24 hrs
 
         })
+        // Retorna o token e o usuário autenticado
+      // res.send({token, user})
+
+      // Com a implementação do cookie, apenas o usuário é
+      // retornado ao front-end
+      // HTTP 200: OK (implícito)
         res.send({user}).end()
     }
     catch(error){
@@ -143,16 +158,20 @@ controller.login = async function (req,res) {
 
         //HTTP 500: Internal Server Error
 
-        res.status(500).end()
+        res.status(500)
     } 
 }
 controller.logout = function(req, res){
+    // Apaga no front-end o cookie que armazena o token de autorização
     res.clearCookie(process.env.AUTH_COOKIE_NAME)
+    // HTTP 204: No Content
     res.status(204).end
 }
 controller.me = function(req,res){
     // retorna as informações do usuario autenticado
-    return req?.authUser
+    // HTTP 200: OK (implícito)
+  res.send(req?.authUser)
+  
 }
 
 
