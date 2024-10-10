@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken'
 
 // algumas rotas, como user ou login poderao ser acessadas sem a necessidade de apresentação do token
 const bypassRoutes =[
-    {url: '/users/login', method: 'POST' }
+    {url: '/users/login', method: 'POST' },
+    {url: '/keep-alive', method:'GET'}
  ]
 
 export default function(req,res,next){

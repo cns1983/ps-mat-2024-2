@@ -28,3 +28,5 @@ npx prisma init --datasource-provider postgresql
 npx prisma migrate dev --name create-cars
 
 npx prisma studio. para entrar no banco de dados
+
+npm run build # para colocar em produção
