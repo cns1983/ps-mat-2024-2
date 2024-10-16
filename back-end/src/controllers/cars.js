@@ -5,6 +5,12 @@ const controller = {} // objeto vazio
 
 controller.create = async function (req,res){
     try{
+        // preenche qual usuario criou o carro com o id do usuario autenticado
+        req.body.created_user_id = req.authUser.id
+
+        // preenche qual usuario modificou por ultimo o carro com id do usuario autenticado
+        req.body.updated_user_id = req.authUser.id
+
         await prisma.car.create({data:req.body})
         // HTTP 201: Created
         res.status(201).end()
@@ -18,6 +24,8 @@ controller.create = async function (req,res){
 
 controller.retrieveAll = async function (req,res){
     try {
+        const includedRels = req.query.include?.split(',') ??[]
+
         const result = await prisma.car.findMany({
             orderBy:[
                 {brand:'asc'},
@@ -25,7 +33,9 @@ controller.retrieveAll = async function (req,res){
                 {id:'asc'}
             ],
             include: {
-                customer: req.query.include==='customer'
+                customer: includedRels.include==='customer',
+                created_user: includedRels.include==='created_user',
+                updated_user: includedRels.include==='updated_user'
             }
         })
         // HTTP 200 :OK (IMPLICITO)
@@ -42,10 +52,14 @@ controller.retrieveAll = async function (req,res){
 }
 controller.retrieveOne = async function (req,res){
     try {
+        const includedRels = req.query.include?.split(',') ??[]
+
         const result = await prisma.car.findUnique({
             where: {id: Number(req.params.id)},
             include: {
-                customer: req.query.include === 'customer'
+                customer: includedRels.include==='customer',
+                created_user: includedRels.include==='created_user',
+                updated_user: includedRels.include==='updated_user'
             }
     })
         // encontrou retorna HTTP 200 :OK (IMPLICITO)
@@ -65,6 +79,9 @@ controller.retrieveOne = async function (req,res){
 
 controller.update = async function (req,res) {
     try {
+        // preenche qual usuario modificou por ultimo o carro com id do usuario autenticado
+        req.body.updated_user_id = req.authUser.id
+
         const result = await prisma.car.update({
             where: {id : Number(req.params.id)},
             data: req.body
