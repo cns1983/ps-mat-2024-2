@@ -13,7 +13,7 @@ import FooterBar from './ui/FooterBar'
 import AppRoutes from './routes/AppRoutes'
 import Box from '@mui/material/Box'
 import { BrowserRouter } from 'react-router-dom'
-import AuthUserContext from './context/AuthUserContext'
+import AuthUserContext from './contexts/AuthUserContext'
 
 import myfetch from './lib/myfetch';
 

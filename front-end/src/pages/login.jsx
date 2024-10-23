@@ -15,7 +15,7 @@ import myfetch from '../lib/myfetch'
 import useNotification from '../ui/useNotification'
 import useWaiting from '../ui/useWaiting'
 import { useNavigate } from 'react-router-dom'
-import AuthUserContext from '../context/AuthUserContext'
+import AuthUserContext from '../contexts/AuthUserContext'
 
 export default function Login() {
 

@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom'
-import AuthUserContext from '../context/AuthUserContext'
+import AuthUserContext from '../contexts/AuthUserContext'
 
 export default function MainMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -22,37 +22,39 @@ export default function MainMenu() {
     {
       children: 'Página inicial',
       to: '/',
-      divider: true
+      divider: authUser
     },
     {
       children: 'Listagem de veículos',
       to: '/cars',
       divider: false,
-      requiresAuth: true
+      requiresAuth: authUser
     },
     {
       children: 'Cadastro de veículos',
       to: '/cars/new',
-      divider: true,
-      requiresAuth: true
+      divider: authUser,
+      requiresAuth: authUser
     },
     {
       children: 'Listagem de clientes',
       to: '/customers',
       divider: false,
-      requiresAuth: true
+      requiresAuth: authUser
     },
     {
       children: 'Cadastro de clientes',
       to: '/customers/new',
-      divider: true,
-      requiresAuth: true
+      divider: authUser,
+      requiresAuth: authUser
     },
     {
       children: 'Cadastro de usurarios',
       to: '/users',
-      divider: true,
-      requiresAuth: true
+      divider: authUser,
+      // Item do menu so aparece se o usuario for administrador
+      requiresAuth: authUser?.is_admin
+      
     },
     {
       children: 'Sobre o autor',
@@ -70,8 +72,8 @@ export default function MainMenu() {
         sx={{ mr: 2 }}
         id="basic-button"
         aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
+        aria-haspopup="authUser"
+        aria-expanded={open ? 'authUser' : undefined}
         onClick={handleClick}
       >
         <MenuIcon />
