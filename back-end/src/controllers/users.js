@@ -142,7 +142,7 @@ controller.login = async function (req,res) {
             secure: true,   // O cookie será criptografado em conexões https
             sameSite:'none',
             path:'/',
-            maxAge: 24*60*60*100  //24 hrs
+            maxAge: 24 * 60 * 60 * 100  //24 hrs
 
         })
         // Retorna o token e o usuário autenticado
@@ -165,7 +165,7 @@ controller.logout = function(req, res){
     // Apaga no front-end o cookie que armazena o token de autorização
     res.clearCookie(process.env.AUTH_COOKIE_NAME)
     // HTTP 204: No Content
-    res.status(204).end
+    res.status(204).end()
 }
 controller.me = function(req,res){
     // retorna as informações do usuario autenticado
