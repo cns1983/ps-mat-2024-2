@@ -79,9 +79,8 @@ export default function CarList() {
       field: 'customer',
       headerName: 'Cliente',
       width: 250,
-      renderCell: (value)=> value.row?.customer?.name
+      renderCell: (value) => value.row?.customer?.name
     },
-    
     {
       field: '_edit',
       headerName: 'Editar',

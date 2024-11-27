@@ -25,7 +25,6 @@ export default function CarForm() {
     que, devido ao funcionamento do componente DatePicker, deve
     iniciar valendo null.
   */
-
   const formDefaults = {
     brand: '',
     model: '',
@@ -40,7 +39,7 @@ export default function CarForm() {
   const [state, setState] = React.useState({
     car: { ...formDefaults },
     formModified: false,
-    customers:[],
+    customers: [],
     inputErrors: {},
   })
   const { car, customers, formModified, inputErrors } = state
@@ -141,22 +140,23 @@ export default function CarForm() {
     a função loadData() para buscar no back-end os dados do cliente a ser editado
   */
   React.useEffect(() => {
-   loadData()
+    loadData()
   }, [])
 
   async function loadData() {
     showWaiting(true)
     try {
 
-      let car = {...formDefaults}, customers = []
+      let car = { ...formDefaults }, customers = []
 
-      // busca a lista de clientes para preencher o combo de escolha do cliente que comprou o carro
+      // Busca a lista de clientes para preencher o combo de escolha
+      // do cliente que comprou o carro
+      customers = await myfetch.get('/customers')
 
-      customers =  await myfetch.get('/customers')
-      
-      // se houver parametro na rota, precisamos buscar o carro para ser editado
+      // Se houver parâmetro na rota, precisamos buscar o carro para
+      // ser editado
+      if(params.id) {
 
-      if (params.id){
         car = await myfetch.get(`/cars/${params.id}`)
 
         // Converte o formato de data armazenado no banco de dados
@@ -166,7 +166,9 @@ export default function CarForm() {
           car.selling_date = parseISO(car.selling_date)
         }
       }
+
       setState({ ...state, car, customers })
+
     } catch (error) {
       console.error(error)
       notify(error.message, 'error')
@@ -188,8 +190,8 @@ export default function CarForm() {
     navigate('..', { relative: 'path', replace: true })
   }
 
-  function handleKeyDown(event){
-    if(event.key === 'delete'){
+  function handleKeyDown(event) {
+    if(event.key === 'Delete') {
       const stateCopy = {...state}
       stateCopy.car.customer_id = null
       setState(stateCopy)
@@ -339,6 +341,7 @@ export default function CarForm() {
             helperText={inputErrors?.selling_price}
             error={inputErrors?.selling_price}
           />
+
           <TextField
             name='customer_id'
             label='Cliente'
@@ -349,9 +352,8 @@ export default function CarForm() {
             onChange={handleFieldChange}
             onKeyDown={handleKeyDown}
             select
-            helperText={inputErrors?.customer_id || 'tecle del para limpar o cliente'}
+            helperText={inputErrors?.customer_id || 'Tecle DEL para limpar o cliente'}
             error={inputErrors?.customer_id}
-            
           >
             {customers.map((c) => (
               <MenuItem key={c.id} value={c.id}>

@@ -2,10 +2,11 @@ import { z } from 'zod'
 
 const maxSellingDate = new Date(); // Hoje
 const minSellingDate = new Date(1960, 0, 1); // Define a data mínima para 1 de janeiro de 1960
-const maxYearManufacture = new Date()
-maxYearManufacture.setFullYear(maxYearManufacture.getFullYear())
+const minSellingYear = new Date(1960, 0, 1).getFullYear(); // 1960
+const maxYearManufacture = new Date().getFullYear();// Ano atual
+const plateRegex = /^[A-Z]{3}-\d[0-9A-J]\d{2}$/
 
-export default z.object({
+const Car = z.object({
   brand: z
     .string()
     .max(25, { message: 'O marca deve ter, no máximo, 25 caracteres' }),
@@ -18,19 +19,22 @@ export default z.object({
     .string()
     .max(12, { message: 'A cor deve pode ter, no máximo, 12 caracteres' }),
 
-  year_manufacture: z.coerce
+    year_manufacture: z.coerce
     .number()
-    .min(minSellingDate, {
-      message: 'O ano de fabricação deve ser maior que 1960',
+    .min(minSellingYear, {
+      message: 'O ano de fabricação deve ser maior ou igual a 1960',
     })
     .max(maxYearManufacture, {
-      message: 'O ano de fabricação deve ser menor que ' + maxYearManufacture,
+      message: `O ano de fabricação deve ser menor ou igual a ${maxYearManufacture}`,
     }),
 
   imported: z.boolean(),
 
   plates: z
     .string()
+    .regex(plateRegex, {
+      message: 'A placa deve estar no formato AAA-9X99, onde X é um dígito ou uma letra de A a J',
+    })
     .max(8, { message: 'A Placa pode ter, no máximo, 8 caracteres' }),
 
   selling_date:
@@ -48,4 +52,6 @@ export default z.object({
     .gte(1000, { message: 'O valor deve ser maior que R$ 1.000' })
     .lte(5000000, { message: 'O valor deve ser menor que R$ 5.000.000' })
     .nullable(),
-});
+})
+
+export default Car

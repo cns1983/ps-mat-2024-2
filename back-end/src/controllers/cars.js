@@ -1,4 +1,6 @@
 import prisma from "../database/client.js";
+import Car from "../models/car.js";
+import {ZodError} from 'zod'
 
 
 const controller = {} // objeto vazio
@@ -11,14 +13,22 @@ controller.create = async function (req,res){
         // preenche qual usuario modificou por ultimo o carro com id do usuario autenticado
         req.body.updated_user_id = req.authUser.id
 
+        // chama o zod para validação do carro
+        Car.parse(req.body)
+
         await prisma.car.create({data:req.body})
         // HTTP 201: Created
         res.status(201).end()
     } 
     catch(error){
         console.error(error)
+
+        // se for erro de validação do zod retorna 
+        //HTTP 422: unprocessable entity
+        if (error instanceof ZodError) res.status(422).send(error.issues)
         //HTTP 500: Internal Server Error
-        res.status(500).end() 
+        else res.status(500).end() 
+         
     }   
 }
 
@@ -33,9 +43,9 @@ controller.retrieveAll = async function (req,res){
                 {id:'asc'}
             ],
             include: {
-                customer: includedRels.include==='customer',
-                created_user: includedRels.include==='created_user',
-                updated_user: includedRels.include==='updated_user'
+                customer: includedRels.includes('customer'),
+                created_user: includedRels.includes('created_user'),
+                updated_user: includedRels.includes('updated_user')
             }
         })
         // HTTP 200 :OK (IMPLICITO)
@@ -57,9 +67,9 @@ controller.retrieveOne = async function (req,res){
         const result = await prisma.car.findUnique({
             where: {id: Number(req.params.id)},
             include: {
-                customer: includedRels.include==='customer',
-                created_user: includedRels.include==='created_user',
-                updated_user: includedRels.include==='updated_user'
+                customer: includedRels.includes('customer'),
+                created_user: includedRels.includes('created_user'),
+                updated_user: includedRels.includes('updated_user')
             }
     })
         // encontrou retorna HTTP 200 :OK (IMPLICITO)
@@ -82,6 +92,9 @@ controller.update = async function (req,res) {
         // preenche qual usuario modificou por ultimo o carro com id do usuario autenticado
         req.body.updated_user_id = req.authUser.id
 
+        // chama o zod para validação do carro
+        Car.parse(req.body)
+
         const result = await prisma.car.update({
             where: {id : Number(req.params.id)},
             data: req.body
@@ -94,9 +107,11 @@ controller.update = async function (req,res) {
     catch(error){
         console.error(error)
 
+        // se for erro de validação do zod retorna 
+        //HTTP 422: unprocessable entity
+        if (error instanceof ZodError) res.status(422).send(error.issues)
         //HTTP 500: Internal Server Error
-
-        res.status(500).end()
+        else res.status(500).end() 
     }    
 }
 

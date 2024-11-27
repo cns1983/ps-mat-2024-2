@@ -71,6 +71,9 @@ controller.retrieveOne = async function (req,res){
 
 controller.update = async function (req,res) {
     try {
+        // chama o zod para validação do cliente
+        Customer.parse(req.body)
+
         const result = await prisma.customer.update({
             where: {id : Number(req.params.id)},
             data: req.body
@@ -83,9 +86,13 @@ controller.update = async function (req,res) {
     catch(error){
         console.error(error)
 
+        // se for erro de validação do zod retorna 
+        //HTTP 422: unprocessable entity
+        if (error instanceof ZodError) res.status(422).send(error.issues)
+
         //HTTP 500: Internal Server Error
 
-        res.status(500).end()
+        else res.status(500).end()
     }    
 }
 
